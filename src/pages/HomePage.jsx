@@ -9,7 +9,7 @@ const HomePage = () => {
     <>
       <Hero />
       <HomeCards />
-      <QuestionListings isHome={true} />
+      <QuestionListings isHome={true}/>
       <ViewAllQuestions />
     </>
   );

@@ -3,13 +3,13 @@ import QuestionListing from './QuestionListing';
 import Spinner from './Spinner';
 import { backendUrl } from '../config';
 
-const QuestionListings = ({ isHome = false }) => {
+const QuestionListings = ({ isHome = false, tag = "" }) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const apiUrl = isHome ? `${backendUrl}/api/Questions/pagination?SortBy=0&SortDirection=0&Page=1&PageSize=10` : `${backendUrl}/api/Questions/pagination?SortBy=0&SortDirection=0&Page=1&PageSize=10`;
+      const apiUrl = isHome ? `${backendUrl}/api/Questions/pagination?SortBy=0&SortDirection=0&Page=1&PageSize=10` : `${backendUrl}/api/Questions/pagination?${tag?("tag="):("")}${tag}&SortBy=0&SortDirection=0&Page=1&PageSize=10`;
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();

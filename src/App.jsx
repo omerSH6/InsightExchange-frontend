@@ -8,7 +8,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import QuestionsPage from './pages/QuestionsPage';
 import NotFoundPage from './pages/NotFoundPage';
-import JobPage, { jobLoader } from './pages/QuestionPage';
+import QuestionPage from './pages/QuestionPage';
 import AddQuestionPage from './pages/AddQuestionPage';
 import LoginPage from "./pages/LoginPage";
 import {AuthProvider}  from "./contexts/AuthContext"
@@ -58,11 +58,7 @@ const App = () => {
       <Route path='/questions' element={<QuestionsPage />} />
       <Route path='/add-question' element={<AddQuestionPage addJobSubmit={addJob} />} />
   
-      <Route
-        path='/question/:id'
-        element={<JobPage deleteJob={deleteJob} />}
-        loader={jobLoader}
-      />
+      <Route path='/question/:id' element={<QuestionPage />}/>
       <Route path='*' element={<NotFoundPage />} />
     </Route>
     )

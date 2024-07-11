@@ -72,7 +72,7 @@ const QuestionPage = () => {
       .then(() => {
         toast.success("Answer Added Successfully");
         setAnswer("");
-        return navigate(`/question/${id}`);
+        return navigate(0);
       })
       .catch((error) => {
         toast.error("Failed To Add Answer");

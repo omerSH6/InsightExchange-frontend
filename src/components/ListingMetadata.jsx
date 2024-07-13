@@ -30,14 +30,9 @@ const Metadata = ({ listing: data }) => {
                             <span className="font-semibold">Votes:</span> {data.totalVotes}
                         </div>
                         )}
-                        {data.totalAnswers && (
+                        {typeof data.totalAnswers === 'number' && (
                         <div>
                             <span className="font-semibold">Answers:</span> {data.totalAnswers}
-                        </div>
-                        )}
-                        {data.answers?.length > 0 && (
-                        <div>
-                            <span className="font-semibold">Answers:</span> {data.answers.length}
                         </div>
                         )}
                         {data.tags?.length > 0 && (

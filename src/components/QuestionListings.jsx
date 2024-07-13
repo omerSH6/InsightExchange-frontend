@@ -8,7 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn, token } = useAuth();
+  const { isLoggedIn, token, userRole } = useAuth();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -56,7 +56,7 @@ const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
         ) : (
           <div className='grid grid-cols-1 md:grid-cols-1 gap-6'>
             {questions.map((question) => (
-              <QuestionListing key={question.id} question={question} />
+              <QuestionListing key={question.id} question={question} pending={pending} />
             ))}
           </div>
         )}

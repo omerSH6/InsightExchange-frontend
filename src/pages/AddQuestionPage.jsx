@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { backendUrl } from '../config';
+import { useAuth } from "../contexts/AuthContext";
 
 const AddQuestionPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
+  const { isLoggedIn, token } = useAuth();
 
   const navigate = useNavigate();
   const addQuestion = async (title, description, tags) => {
@@ -20,6 +22,7 @@ const AddQuestionPage = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       
       body: JSON.stringify(requestBody),
@@ -35,7 +38,7 @@ const AddQuestionPage = () => {
     addQuestion(title, description, tags)
     .then(()=>{
       toast.success('Question Added Successfully');
-      return navigate(`/question/${id}`);
+      return navigate(`/`);
     })
     .catch((error)=>{
       toast.error('Failed To Add Question');
@@ -48,7 +51,7 @@ const AddQuestionPage = () => {
       <div className='container m-auto max-w-2xl py-24'>
         <div className='bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0'>
           <form onSubmit={submitForm}>
-            <h2 className='text-3xl text-center font-semibold mb-6'>Add Job</h2>
+            <h2 className='text-3xl text-center font-semibold mb-6'>Add Question</h2>
 
             <div className='mb-4'>
               <label className='block text-gray-700 font-bold mb-2'>

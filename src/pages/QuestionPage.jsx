@@ -9,18 +9,28 @@ import AnswerListing from "../components/AnswerListing";
 import ListingMetadata from "../components/ListingMetadata";
 import Vote from "../components/Vote"
 import Spinner from '../components/Spinner';
+import { useSearchParams } from 'react-router-dom';
 
 const QuestionPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { isLoggedIn, token } = useAuth();
   const { id } = useParams();
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(true);
+  const [approve, setApprove] = useState(null);
   const [answer, setAnswer] = useState("");
+  const pending = searchParams.get("pending") == "true"? true: false;
 
   useEffect(() => {
     const fetchQuestion = async () => {
-      const apiUrl =`${backendUrl}/api/Questions?Id=${id}`;
+      let apiUrl = '';
+      if(pending){
+        apiUrl = `${backendUrl}/api/Administrator/getPendingQuestion?Id=${id}`;
+      }else{
+        apiUrl = `${backendUrl}/api/Questions?Id=${id}`;
+      }
+      
       try {
         let requestOptions = {}
         if(isLoggedIn){
@@ -80,15 +90,62 @@ const QuestionPage = () => {
       });
   };
 
+
+  const approveQuestion = async (questionID, shouldApprove) => {
+    let questionState = 2;
+    if(shouldApprove == true){
+      questionState = 0;
+    }
+    if(shouldApprove == false){
+      questionState = 1;
+    }
+
+    const requestBody = {
+      questionId: questionID,
+      questionState: questionState
+    };
+
+    const res = await fetch(`${backendUrl}/api/administrator/editQuestionState`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`,
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+  };
+
+  const submitApproveForm = (e) => {
+    e.preventDefault();
+    const shouldApprove = approve == true? true:false;
+    const wasApproved = shouldApprove? "Approved":"Disapproved";
+    console.log(`question id ${id}`);
+    approveQuestion(id, shouldApprove)
+      .then(() => {
+        toast.success(`Question ${wasApproved} Successfully`);
+      })
+      .catch((error) => {
+        toast.error(`Failed To ${wasApproved} Question`);
+        return;
+      }).finally(() => {
+        return navigate("/questions?pending=true");
+      })
+  };
+
   return (
     <>
       <section>
         <div className="container m-auto py-6 px-6">
           <Link
-            to="/questions"
+            to='/questions?pending=true'
             className="text-indigo-500 hover:text-indigo-600 flex items-center"
           >
-            <FaArrowLeft className="mr-2" /> Back to Questions Listings
+            <FaArrowLeft className="mr-2" /> Back to {pending?("Pending"):("")} Questions Listings
           </Link>
         </div>
       </section>
@@ -102,7 +159,14 @@ const QuestionPage = () => {
               <div className="bg-white rounded-xl shadow-md">
                 <div className="p-4 flex">
                   <div className="mr-6">
+                  {isLoggedIn & !pending ? (
+                    <>
                     <Vote initialVotes={question.totalVotes} wasVotedByCurrentUser={question.wasVotedByCurrentUser} voteType="question" id={question.id}/>
+                    </>
+                  ): (
+                    <></>
+                  )}
+                    
                   </div> 
                   <div className="relative">
                         <h1 className="text-3xl font-bold mb-4">{question.title}</h1>
@@ -127,7 +191,7 @@ const QuestionPage = () => {
               </div>
               
   
-              {isLoggedIn ? (
+              {isLoggedIn & !pending ? (
                 <>
                   {/* <!-- Add Answer --> */}
                   <div className="bg-white p-6 rounded-lg shadow-md">
@@ -158,6 +222,25 @@ const QuestionPage = () => {
                         </button>
                       </div>
                     </form>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+
+              {isLoggedIn & pending ? (
+                <>
+                  <div className="bg-white p-6 rounded-lg shadow-md">
+                    <form onSubmit={submitApproveForm}>
+                        <div className="flex space-x-3">
+                          <button className="bg-green-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline" type="submit" onClick={()=>setApprove(true)}>
+                            Approve
+                          </button>
+                          <button className="bg-red-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline" type="submit" onClick={()=>setApprove(false)}>
+                            Disapprove
+                          </button>
+                        </div>
+                    </form> 
                   </div>
                 </>
               ) : (

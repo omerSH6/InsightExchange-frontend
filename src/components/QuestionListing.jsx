@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ListingMetadata from './ListingMetadata'
 
 
-const QuestionListing = ({ question }) => {
+const QuestionListing = ({ question, pending}) => {
   return (
     <div className='bg-white rounded-xl shadow-md relative'>
       <div className='p-4 flex items-center justify-between'>
@@ -13,7 +13,7 @@ const QuestionListing = ({ question }) => {
         </div>
         <div>
           <Link
-            to={`/question/${question.id}`}
+            to={`/question/${question.id}${pending?(`?pending=${pending}`):("")}`}
             className='bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm inline-block'
           >
             Read More

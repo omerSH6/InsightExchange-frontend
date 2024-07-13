@@ -80,18 +80,18 @@ const QuestionPage = () => {
     e.preventDefault();
     addAnswer(answer)
       .then(() => {
-        toast.success("Answer Added Successfully");
+        toast.success("Answer Created Successfully");
         setAnswer("");
         return navigate(0);
       })
       .catch((error) => {
-        toast.error("Failed To Add Answer");
+        toast.error("Failed To Create Answer");
         return;
       });
   };
 
 
-  const approveQuestion = async (questionID, shouldApprove) => {
+  const approveQuestion = async (questionId, shouldApprove) => {
     let questionState = 2;
     if(shouldApprove == true){
       questionState = 0;
@@ -101,7 +101,7 @@ const QuestionPage = () => {
     }
 
     const requestBody = {
-      questionId: questionID,
+      questionId: questionId,
       questionState: questionState
     };
 
@@ -141,12 +141,15 @@ const QuestionPage = () => {
     <>
       <section>
         <div className="container m-auto py-6 px-6">
-          <Link
-            to='/questions?pending=true'
-            className="text-indigo-500 hover:text-indigo-600 flex items-center"
-          >
-            <FaArrowLeft className="mr-2" /> Back to {pending?("Pending"):("")} Questions Listings
-          </Link>
+          {pending?(<>
+              <Link to='/questions?pending=true' className="text-indigo-500 hover:text-indigo-600 flex items-center">
+                <FaArrowLeft className="mr-2" /> Back to Pending Questions Listings
+              </Link>
+            </>):(<>
+              <Link to='/questions' className="text-indigo-500 hover:text-indigo-600 flex items-center">
+                <FaArrowLeft className="mr-2" /> Back to Questions Listings
+              </Link>
+            </>)}
         </div>
       </section>
       {loading ? (
@@ -170,10 +173,7 @@ const QuestionPage = () => {
                   </div> 
                   <div className="relative">
                         <h1 className="text-3xl font-bold mb-4">{question.title}</h1>
-                        <div className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
-                          <FaMapMarker className="text-orange-700 mr-1" />
-                          <p className="text-orange-700">location</p>
-                        </div>
+                        
                         <p>{question.content}</p>
                   </div>  
                 </div>

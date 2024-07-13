@@ -18,7 +18,7 @@ const LoginPage = () => {
       toast.success('Successfully Logged In');
       return navigate(`/`);
     } catch (err) {
-      toast.error('Failed To Login');
+      toast.error('Failed To Login - Wrong Credentials');
     }
   };
 

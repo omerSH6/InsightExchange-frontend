@@ -38,7 +38,7 @@ const RegistrationPage = () => {
       return navigate(`/login`);
     })
     .catch((error)=>{
-      toast.error('Failed To Register User');
+      toast.error('Failed To Register - Choose different username');
       return;
     });
   };

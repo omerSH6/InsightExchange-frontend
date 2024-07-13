@@ -37,11 +37,11 @@ const AddQuestionPage = () => {
 
     addQuestion(title, description, tags)
     .then(()=>{
-      toast.success('Question Added Successfully');
+      toast.success('Question Created Successfully');
       return navigate(`/`);
     })
     .catch((error)=>{
-      toast.error('Failed To Add Question');
+      toast.error('Failed To Create Question');
       return;
     });
   };

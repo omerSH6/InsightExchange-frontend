@@ -1,141 +1,22 @@
-import { useState, useEffect } from "react";
-import { useParams, useLoaderData, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaMapMarker } from "react-icons/fa";
-import { backendUrl } from "../config";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 import AnswerListing from "../components/AnswerListing";
 import ListingMetadata from "../components/ListingMetadata";
 import Vote from "../components/Vote"
 import Spinner from '../components/Spinner';
 import { useSearchParams } from 'react-router-dom';
+import {getQuestion} from '../Application/QuestionsService'
+import QuestionApprovalForm from '../components/QuestionApprovalForm'
+import { useParams} from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
+import AddAnswerForm from '../components/AddAnswerForm'
 
 const QuestionPage = () => {
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { isLoggedIn, token } = useAuth();
-  const { id } = useParams();
-  const [question, setQuestion] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [approve, setApprove] = useState(null);
-  const [answer, setAnswer] = useState("");
+  const [searchParams] = useSearchParams();
   const pending = searchParams.get("pending") == "true"? true: false;
-
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      let apiUrl = '';
-      if(pending){
-        apiUrl = `${backendUrl}/api/Administrator/getPendingQuestion?QuestionId=${id}`;
-      }else{
-        apiUrl = `${backendUrl}/api/Questions?QuestionId=${id}`;
-      }
-      
-      try {
-        let requestOptions = {}
-        if(isLoggedIn){
-          requestOptions = {
-            method: "GET",
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        }
-        const res = await fetch(apiUrl,requestOptions);
-        const data = await res.json();
-        setQuestion(data);
-      } catch (error) {
-        console.log('Error fetching data', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuestion();
-  }, []);
-
-
-  const addAnswer = async (answer) => {
-    const requestBody = {
-      content: answer,
-      questionId: id,
-    };
-
-    const res = await fetch(`${backendUrl}/api/Answers`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}`,
-      },
-
-      body: JSON.stringify(requestBody),
-    });
-    console.log(token);
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-  };
-
-  const submitAddAnswerForm = (e) => {
-    e.preventDefault();
-    addAnswer(answer)
-      .then(() => {
-        toast.success("Answer Created Successfully");
-        setAnswer("");
-        return navigate(0);
-      })
-      .catch((error) => {
-        toast.error("Failed To Create Answer");
-        return;
-      });
-  };
-
-
-  const approveQuestion = async (questionId, shouldApprove) => {
-    let questionState = 2;
-    if(shouldApprove == true){
-      questionState = 0;
-    }
-    if(shouldApprove == false){
-      questionState = 1;
-    }
-
-    const requestBody = {
-      questionId: questionId,
-      questionState: questionState
-    };
-
-    const res = await fetch(`${backendUrl}/api/administrator/editQuestionState`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}`,
-      },
-
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-  };
-
-  const submitApproveForm = (e) => {
-    e.preventDefault();
-    const shouldApprove = approve == true? true:false;
-    const wasApproved = shouldApprove? "Approved":"Disapproved";
-    console.log(`question id ${id}`);
-    approveQuestion(id, shouldApprove)
-      .then(() => {
-        toast.success(`Question ${wasApproved} Successfully`);
-      })
-      .catch((error) => {
-        toast.error(`Failed To ${wasApproved} Question`);
-        return;
-      }).finally(() => {
-        return navigate("/questions?pending=true");
-      })
-  };
+  const { isLoggedIn, userRole } = useAuth();
+  const { id } = useParams();
+  const {question, loading} = getQuestion({id, pending});
 
   return (
     <>
@@ -193,56 +74,14 @@ const QuestionPage = () => {
   
               {isLoggedIn & !pending ? (
                 <>
-                  {/* <!-- Add Answer --> */}
-                  <div className="bg-white p-6 rounded-lg shadow-md">
-                    <form onSubmit={submitAddAnswerForm}>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="answer"
-                          className="block text-gray-700 font-bold mb-2"
-                        >
-                          Answer
-                        </label>
-                        <textarea
-                          id="answer"
-                          name="answer"
-                          className="border rounded w-full py-2 px-3"
-                          rows="4"
-                          placeholder="Add Answer..."
-                          value={answer}
-                          onChange={(e) => setAnswer(e.target.value)}
-                        ></textarea>
-                      </div>
-                      <div>
-                        <button
-                          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
-                          type="submit"
-                        >
-                          Add Answer
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                 <AddAnswerForm questionId={id} />
                 </>
               ) : (
                 <></>
               )}
 
-              {isLoggedIn & pending ? (
-                <>
-                  <div className="bg-white p-6 rounded-lg shadow-md">
-                    <form onSubmit={submitApproveForm}>
-                        <div className="flex space-x-3">
-                          <button className="bg-green-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline" type="submit" onClick={()=>setApprove(true)}>
-                            Approve
-                          </button>
-                          <button className="bg-red-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline" type="submit" onClick={()=>setApprove(false)}>
-                            Disapprove
-                          </button>
-                        </div>
-                    </form> 
-                  </div>
-                </>
+              {isLoggedIn & userRole=='Admin' &pending ? (
+                <QuestionApprovalForm id={id} />
               ) : (
                 <></>
               )}

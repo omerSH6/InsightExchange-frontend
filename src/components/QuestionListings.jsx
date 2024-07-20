@@ -1,49 +1,9 @@
-import { useState, useEffect } from 'react';
 import QuestionListing from './QuestionListing';
 import Spinner from './Spinner';
-import { backendUrl } from '../config';
-import { useAuth } from "../contexts/AuthContext";
-
+import {getQuestions} from '../Application/QuestionsService'
 
 const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { isLoggedIn, token, userRole } = useAuth();
-
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      let apiUrl = "";
-      let requestOptions = {}
-      console.log(pending)
-      if(isHome){
-        apiUrl = `${backendUrl}/api/Questions/pagination?SortBy=0&SortDirection=0&Page=1&PageSize=10`;
-      }else if(pending == null){
-        apiUrl = `${backendUrl}/api/Questions/pagination?${tag?("tag="):("")}${tag}&SortBy=0&SortDirection=0&Page=1&PageSize=10`;
-      }else{
-        apiUrl = `${backendUrl}/api/Administrator/getPendingQuestionsWithPagination?${tag?("tag="):("")}${tag}&SortBy=0&SortDirection=0&Page=1&PageSize=10`;
-        if(isLoggedIn){
-          requestOptions = {
-            method: "GET",
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        }
-      }
-        
-      try {
-        const res = await fetch(apiUrl, requestOptions);
-        const data = await res.json();
-        setQuestions(data);
-      } catch (error) {
-        console.log('Error fetching data', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuestions();
-  }, []);
+  const {questions, loading} = getQuestions({tag, pending});
 
   return (
     <section className='bg-blue-50 px-4 py-10'>

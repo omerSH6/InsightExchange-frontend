@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import QuestionListing from './QuestionListing';
 import Spinner from './Spinner';
 import { backendUrl } from '../config';
 import { useAuth } from "../contexts/AuthContext";
@@ -8,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 const NotificationListings = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn, token, userId } = useAuth();
+  const { token, userId } = useAuth();
 
   useEffect(() => {
     const fetchNotifications = async () => {

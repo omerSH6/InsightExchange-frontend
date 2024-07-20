@@ -8,11 +8,12 @@ import { useAuth } from "../contexts/AuthContext";
 const NotificationListings = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { isLoggedIn, token, userRole } = useAuth();
+  const { isLoggedIn, token, userId } = useAuth();
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const apiUrl = `${backendUrl}/api/Account/notifications`;
+   
+      const apiUrl = `${backendUrl}/api/Account/notifications?UserId=${userId}`;
       const requestOptions = {
         method: "GET",
         headers: {

@@ -29,7 +29,7 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
     }
 
     if(wasVotedByCurrentUser){
-      toast.error(`You alreadt voted for this ${voteType}`);
+      toast.error(`You already voted for this ${voteType}`);
       return false;
     }
 

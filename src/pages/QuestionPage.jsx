@@ -26,9 +26,9 @@ const QuestionPage = () => {
     const fetchQuestion = async () => {
       let apiUrl = '';
       if(pending){
-        apiUrl = `${backendUrl}/api/Administrator/getPendingQuestion?Id=${id}`;
+        apiUrl = `${backendUrl}/api/Administrator/getPendingQuestion?QuestionId=${id}`;
       }else{
-        apiUrl = `${backendUrl}/api/Questions?Id=${id}`;
+        apiUrl = `${backendUrl}/api/Questions?QuestionId=${id}`;
       }
       
       try {

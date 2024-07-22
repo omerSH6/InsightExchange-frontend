@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { backendUrl } from "../config";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../Services/AuthContextService";
 
 
 const AddAnswerForm = ({questionId}) => {
@@ -26,7 +26,6 @@ const AddAnswerForm = ({questionId}) => {
     
           body: JSON.stringify(requestBody),
         });
-        console.log(token);
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }

@@ -3,7 +3,6 @@ import { backendUrl } from "../config";
 
 const fetchQuestionsImp = async ({isLoggedIn, token, pending, tag}) => {
   let apiUrl = "";
-  console.log(pending)
  if(pending == false){
     apiUrl = `${backendUrl}/api/Questions/pagination?${tag?("tag="):("")}${tag}&SortBy=0&SortDirection=0&Page=1&PageSize=10`;
   }else{
@@ -36,11 +35,13 @@ const fetchDataImp = async (isLoggedIn, token, apiUrl) => {
       }
     }
     const res = await fetch(apiUrl, requestOptions);
+    if(!res.ok){
+      throw new Error("Network response was not ok"); 
+    }
     const data = await res.json();
-    console.log(data)
     return data;
   } catch (error) {
-    console.error('Error fetching data', error);
+    throw new Error(`Error fetching data ${error}`);
   }
 };
 

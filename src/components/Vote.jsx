@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../Services/AuthContextService";
 import { toast } from "react-toastify";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../config";
 
 
@@ -53,7 +53,6 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
       isPositiveVote: isPositiveVote,
     };
     requestBody[`${voteType}Id`] = id;
-    console.log(`${backendUrl}/api/Votes/${voteType}`);
     const res = await fetch(`${backendUrl}/api/Votes/${voteType}`, {
       method: "POST",
       headers: {
@@ -63,8 +62,6 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
 
       body: JSON.stringify(requestBody),
     });
-    console.log(requestBody);
-    console.log(res);
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../Services/AuthContextService";
 import { fetchPendingQuestions, fetchQuestionsByTag, fetchPendingQuestion, fetchQuestion } from '../DAL/BackendAccess.jsx';
 
 export function getQuestions({ tag = null, pending = false }) {
@@ -18,10 +18,9 @@ export function getQuestions({ tag = null, pending = false }) {
           fetchedQuestions = await fetchQuestionsByTag(isLoggedIn, token, tag);
         }
         setQuestions(fetchedQuestions);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching questions:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

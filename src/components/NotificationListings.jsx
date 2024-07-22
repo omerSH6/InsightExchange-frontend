@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import { backendUrl } from '../config';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../Services/AuthContextService";
 
 
 const NotificationListings = () => {
@@ -24,7 +24,6 @@ const NotificationListings = () => {
         const data = await res.json();
         setNotifications(data);
       } catch (error) {
-        console.log('Error fetching data', error);
       } finally {
         setLoading(false);
       }

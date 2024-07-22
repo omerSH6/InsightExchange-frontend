@@ -1,6 +1,6 @@
 import QuestionListing from './QuestionListing';
 import Spinner from './Spinner';
-import {getQuestions} from '../Application/QuestionsService'
+import {getQuestions} from '../Services/QuestionsService'
 
 const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
   const {questions, loading} = getQuestions({tag, pending});
@@ -15,9 +15,11 @@ const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
           <Spinner loading={loading} />
         ) : (
           <div className='grid grid-cols-1 md:grid-cols-1 gap-6'>
-            {questions.map((question) => (
-              <QuestionListing key={question.id} question={question} pending={pending} />
-            ))}
+            {questions? (<>
+              {questions.map((question) => (
+                <QuestionListing key={question.id} question={question} pending={pending} />
+              ))}
+            </>):(<></>)}
           </div>
         )}
       </div>

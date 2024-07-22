@@ -11,8 +11,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import QuestionPage from './pages/QuestionPage';
 import AddQuestionPage from './pages/AddQuestionPage';
 import LoginPage from "./pages/LoginPage";
-import {AuthProvider}  from "./contexts/AuthContext"
-import { useAuth } from "./contexts/AuthContext";
+import {AuthProvider}  from "./Services/AuthContextService"
 import RegistrationPage from './pages/RegistrationPage';
 
 const App = () => {

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../Services/AuthContextService";
 import AnswerListing from "../components/AnswerListing";
 import ListingMetadata from "../components/ListingMetadata";
 import Vote from "../components/Vote"
 import Spinner from '../components/Spinner';
 import { useSearchParams } from 'react-router-dom';
-import {getQuestion} from '../Application/QuestionsService'
+import {getQuestion} from '../Services/QuestionsService'
 import QuestionApprovalForm from '../components/QuestionApprovalForm'
 import { useParams} from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";

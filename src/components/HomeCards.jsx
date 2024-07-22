@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Card from './Card';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../Services/AuthContextService';
 
 
 const HomeCards = () => {

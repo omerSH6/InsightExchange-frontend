@@ -1,5 +1,5 @@
 
-import { backendUrl } from "../config";
+import { backendUrl } from "./config";
 
 const fetchQuestionsImp = async ({isLoggedIn, token, pending, tag}) => {
   let apiUrl = "";
@@ -24,6 +24,7 @@ const fetchQuestionImp = async ({isLoggedIn, token, id, pending}) => {
 };
 
 const fetchDataImp = async (isLoggedIn, token, apiUrl) => {
+  console.log("fetchDataImp");
   try {
     let requestOptions = {}
     if(isLoggedIn){

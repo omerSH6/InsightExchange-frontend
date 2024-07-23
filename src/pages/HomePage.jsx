@@ -3,7 +3,7 @@ import HomeCards from '../components/HomeCards';
 import NotificationListings from '../components/NotificationListings';
 import QuestionListings from '../components/QuestionListings';
 import ViewAllQuestions from '../components/ViewAllQuestions';
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage = () => {
   const { isLoggedIn, userRole, token } = useAuth();

@@ -1,22 +1,45 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext.jsx";
 import AnswerListing from "../components/AnswerListing";
 import ListingMetadata from "../components/ListingMetadata";
 import Vote from "../components/Vote"
 import Spinner from '../components/Spinner';
 import { useSearchParams } from 'react-router-dom';
-import {getQuestion} from '../Services/QuestionsService'
 import QuestionApprovalForm from '../components/QuestionApprovalForm'
 import { useParams} from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import AddAnswerForm from '../components/AddAnswerForm'
+import { fetchPendingQuestion, fetchQuestion} from '../BackendAccess.jsx';
+import { useState, useEffect } from 'react';
+
+
 
 const QuestionPage = () => {
   const [searchParams] = useSearchParams();
   const pending = searchParams.get("pending") == "true"? true: false;
-  const { isLoggedIn, userRole } = useAuth();
+  const { isLoggedIn, userRole, token } = useAuth();
   const { id } = useParams();
-  const {question, loading} = getQuestion({id, pending});
+  const [question, setQuestion] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect( () => {
+    const fetchData = async () =>{
+      try {
+        let fetchedQuestion = [];
+        if (pending) {
+          fetchedQuestion = await fetchPendingQuestion(isLoggedIn, token, id);
+        }else {
+          fetchedQuestion = await fetchQuestion(isLoggedIn, token, id);
+        }
+        setQuestion(fetchedQuestion);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }finally{
+        setLoading(false);
+      }
+    }
+    fetchData();
+  },[pending]);
 
   return (
     <>

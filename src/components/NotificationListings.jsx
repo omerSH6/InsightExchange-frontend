@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Spinner from './Spinner';
 import { backendUrl } from '../config';
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext";
 
 
 const NotificationListings = () => {

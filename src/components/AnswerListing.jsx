@@ -1,6 +1,6 @@
 import Vote from './Vote'
 import ListingMetadata from './ListingMetadata'
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext";
 
 
 const AnswerListing = ({ answer }) => {

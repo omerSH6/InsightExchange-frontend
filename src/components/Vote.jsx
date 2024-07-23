@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../config";
@@ -40,7 +40,9 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
     VoteImp(isPositiveVote, voteType, id)
       .then(() => {
         toast.success(`Successfully voted for ${voteType}`);
-        return navigate(0);
+        setTimeout(() => {
+          navigate(0)
+     }, 1000);
       })
       .catch((error) => {
         toast.error(`Failed to vote for ${voteType}`);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { backendUrl } from '../config';
-import { useAuth } from "../Services/AuthContextService";
+import { useAuth } from "../context/AuthContext";
 
 const AddQuestionPage = () => {
   const [title, setTitle] = useState('');

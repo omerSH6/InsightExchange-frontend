@@ -1,9 +1,33 @@
 import QuestionListing from './QuestionListing';
 import Spinner from './Spinner';
-import {getQuestions} from '../Services/QuestionsService'
+import { useState, useEffect } from 'react';
+import { useAuth } from "../context/AuthContext.jsx";
+import { fetchPendingQuestions, fetchQuestionsByTag} from '../BackendAccess.jsx';
 
 const QuestionListings = ({ isHome = false, tag = null , pending = null}) => {
-  const {questions, loading} = getQuestions({tag, pending});
+  const [questions, setQuestions] = useState([]);
+  const { isLoggedIn, token } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let fetchedQuestions = [];
+        if (pending) {
+          fetchedQuestions = await fetchPendingQuestions(isLoggedIn, token, tag);
+        }else {
+          fetchedQuestions = await fetchQuestionsByTag(isLoggedIn, token, tag);
+        }
+        setQuestions(fetchedQuestions);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }finally{
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  },[loading, isLoggedIn, token]);
 
   return (
     <section className='bg-blue-50 px-4 py-10'>

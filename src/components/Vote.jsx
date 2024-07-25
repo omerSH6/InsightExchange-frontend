@@ -7,8 +7,25 @@ import { backendUrl } from "../config";
 
 
 const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
-  const { isLoggedIn, token } = useAuth();
+  const { isLoggedIn, token, userRole } = useAuth();
   const navigate = useNavigate();
+
+  const handleDelete = () => {
+    DeleteImp(voteType, id)
+      .then(() => {
+        toast.success(`Successfully deleted ${voteType}`);
+        setTimeout(() => {
+          if(voteType == 'question'){
+            navigate("/")
+          }
+          navigate(0)
+     }, 1000);
+      })
+      .catch((error) => {
+        toast.error(`Failed delete ${voteType}`);
+        return;
+      });
+  };
 
   const handleUpVote = () => {
     if(IsValidVote()){
@@ -69,6 +86,31 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
     }
   };
 
+  const DeleteImp = async (voteType, id) => {
+    let requestBody = {};
+    requestBody[`${voteType}Id`] = id;
+    let apiUrl= "";
+    if(voteType == 'question'){
+      apiUrl = `${backendUrl}/api/Administrator/deleteQuestion`;
+    }else{
+      apiUrl = `${backendUrl}/api/Administrator/deleteAnswer`;
+    }
+    const res = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`,
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+  };
+
+
+
   return (
     <div className="flex flex-col items-center">
       <button onClick={handleUpVote} className="text-gray-400 hover:text-indigo-800">
@@ -78,6 +120,11 @@ const Vote = ({ initialVotes, wasVotedByCurrentUser, voteType, id}) => {
       <button onClick={handleDownVote} className="text-gray-400 hover:text-indigo-800">
         <FaArrowDown />
       </button>
+        {isLoggedIn & userRole=='Admin'? (
+          <button onClick={handleDelete} className="bg-red-500 hover:bg-indigo-600 text-white font-bold py-1 px-1 rounded-full w-full focus:outline-none focus:shadow-outline">Delete {voteType}</button>
+        ) : (
+          <></>
+        )}
     </div>
   );
 };
